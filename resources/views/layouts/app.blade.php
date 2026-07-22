@@ -372,11 +372,6 @@
                             <i class="bi bi-plus-circle me-1"></i>Create Post
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-info-circle me-1"></i>About
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
