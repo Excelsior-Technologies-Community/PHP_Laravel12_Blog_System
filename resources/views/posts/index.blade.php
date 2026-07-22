@@ -4,8 +4,6 @@
 
 @section('content')
 
-<div class="container my-5">
-
     <!-- Dashboard Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -163,86 +161,65 @@
             <form method="GET"
                 action="{{ route('posts.index') }}">
 
-                <div class="row">
+                <div class="row g-2">
 
-                    <div class="col-md-5">
-
+                    <!-- Search -->
+                    <div class="col-md-4">
                         <input
                             type="text"
                             name="search"
                             class="form-control"
                             placeholder="Search title or content..."
                             value="{{ request('search') }}">
-
                     </div>
 
+                    <!-- Status -->
                     <div class="col-md-2">
+                        <select name="status" class="form-select">
+                            <option value="">All Status</option>
 
-                        <select
-                            name="status"
-                            class="form-select">
-
-                            <option value="">
-
-                                All Status
-
-                            </option>
-
-                            <option
-                                value="published"
-                                {{ request('status')=='published' ? 'selected' : '' }}>
-
+                            <option value="published"
+                                {{ request('status') == 'published' ? 'selected' : '' }}>
                                 Published
-
                             </option>
 
-                            <option
-                                value="draft"
-                                {{ request('status')=='draft' ? 'selected' : '' }}>
-
+                            <option value="draft"
+                                {{ request('status') == 'draft' ? 'selected' : '' }}>
                                 Draft
-
                             </option>
-
                         </select>
-
                     </div>
 
+                    <!-- Featured -->
                     <div class="col-md-2">
+                        <select name="featured" class="form-select">
+                            <option value="">Featured?</option>
 
-                        <select
-                            name="featured"
-                            class="form-select">
-
-                            <option value="">
-
-                                Featured?
-
-                            </option>
-
-                            <option
-                                value="1"
-                                {{ request('featured')=='1' ? 'selected' : '' }}>
-
+                            <option value="1"
+                                {{ request('featured') == '1' ? 'selected' : '' }}>
                                 Yes
-
                             </option>
-
                         </select>
-
                     </div>
 
-                    <div class="col-md-3 d-grid">
+                    <!-- Sort -->
+                    <div class="col-md-2">
+                        <select name="sort" class="form-select">
+                            <option value="">Latest</option>
 
-                        <button
-                            class="btn btn-primary">
+                            <option value="popular"
+                                {{ request('sort') == 'popular' ? 'selected' : '' }}>
+                                Most Viewed
+                            </option>
+                        </select>
+                    </div>
 
-                            <i class="bi bi-search"></i>
-
+                    <!-- Button -->
+                    <div class="col-md-2 d-grid">
+                        <button class="btn btn-primary">
+                            <i class="bi bi-search me-1"></i>
                             Search
-
                         </button>
-
                     </div>
 
                 </div>
@@ -256,168 +233,175 @@
     {{-- Keep your existing --}}
     {{-- @if($posts->isEmpty()) --}}
 
-    <div class="row g-4">
+    <div class="row">
 
-        @foreach($posts as $post)
+        <!-- Posts -->
+        <div class="col-lg-8">
 
-        <div class="col-lg-4 col-md-6">
+            <div class="row g-4">
 
-            <div class="card shadow-sm border-0 h-100">
+                @foreach($posts as $post)
 
-                {{-- Image --}}
-                @if($post->image)
+                <div class="col-lg-6 col-md-6">
 
-                <div class="position-relative">
+                    <div class="card shadow-sm border-0 h-100">
 
-                    <img
-                        src="{{ asset('storage/'.$post->image) }}"
-                        class="card-img-top"
-                        style="height:220px;object-fit:cover;"
-                        alt="{{ $post->title }}">
+                        {{-- Image --}}
+                        @if($post->image)
 
-                    {{-- Featured Badge --}}
-                    @if($post->is_featured)
+                        <div class="position-relative">
 
-                    <span
-                        class="badge bg-danger position-absolute top-0 start-0 m-3">
+                            <img
+                                src="{{ Str::startsWith($post->image, 'http')
+                        ? $post->image
+                        : asset('storage/'.$post->image) }}"
+                                class="card-img-top"
+                                style="height:220px;width:100%;object-fit:contain;background:#f8f9fa;"
+                                alt="{{ $post->title }}">
 
-                        ⭐ Featured
+                            {{-- Featured Badge --}}
+                            @if($post->is_featured)
 
-                    </span>
+                            <span
+                                class="badge bg-danger position-absolute top-0 start-0 m-3">
 
-                    @endif
+                                ⭐ Featured
 
-                </div>
+                            </span>
 
-                @else
+                            @endif
 
-                <div
-                    class="bg-light d-flex justify-content-center align-items-center"
-                    style="height:220px;">
+                        </div>
 
-                    <i
-                        class="bi bi-image display-3 text-secondary"></i>
+                        @else
 
-                    @if($post->is_featured)
+                        <div
+                            class="bg-light d-flex justify-content-center align-items-center"
+                            style="height:220px;background:#f8f9fa;">
+                            <div class="text-center">
+                                <i class="bi bi-image display-3 text-secondary"></i>
+                                <p class="text-muted mb-0 mt-2">No Image Available</p>
+                            </div>
 
-                    <span
-                        class="badge bg-danger position-absolute m-3">
+                            @if($post->is_featured)
+                            <span class="badge bg-danger position-absolute top-0 start-0 m-3">
+                                ⭐ Featured
+                            </span>
+                            @endif
+                        </div>
 
-                        ⭐ Featured
+                        @endif
 
-                    </span>
+                        <div class="card-body">
 
-                    @endif
+                            {{-- Title --}}
 
-                </div>
+                            <h5 class="fw-bold">
 
-                @endif
+                                {{ Str::limit($post->title,60) }}
 
-                <div class="card-body">
+                            </h5>
 
-                    {{-- Title --}}
+                            {{-- Status Badge --}}
 
-                    <h5 class="fw-bold">
+                            @if($post->status=='published')
 
-                        {{ Str::limit($post->title,60) }}
+                            <span class="badge bg-success">
 
-                    </h5>
+                                Published
 
-                    {{-- Status Badge --}}
+                            </span>
 
-                    @if($post->status=='published')
+                            @else
 
-                    <span class="badge bg-success">
+                            <span class="badge bg-warning text-dark">
 
-                        Published
+                                Draft
 
-                    </span>
+                            </span>
 
-                    @else
+                            @endif
 
-                    <span class="badge bg-warning text-dark">
+                            <hr>
 
-                        Draft
+                            <div class="d-flex justify-content-between align-items-center mb-2">
 
-                    </span>
+                                <small class="text-muted">
+                                    <i class="bi bi-book me-1"></i>
+                                    {{ $post->reading_time }} min read
+                                </small>
 
-                    @endif
+                                <small class="text-muted">
+                                    <i class="bi bi-eye me-1"></i>
+                                    {{ number_format($post->views) }} Views
+                                </small>
 
-                    <hr>
+                            </div>
 
-                    {{-- Reading Time --}}
-                    <div class="mb-2">
+                            {{-- Created Date --}}
+                            <div class="mb-3">
 
-                        <small class="text-muted">
+                                <small class="text-muted">
 
-                            <i class="bi bi-book me-1"></i>
+                                    <i class="bi bi-calendar-event me-1"></i>
 
-                            {{ $post->reading_time }} min read
+                                    {{ $post->created_at->format('d M Y') }}
 
-                        </small>
+                                </small>
 
-                    </div>
+                            </div>
 
-                    {{-- Created Date --}}
-                    <div class="mb-3">
+                            {{-- Content --}}
+                            <p class="text-muted">
 
-                        <small class="text-muted">
+                                {{ Str::limit(strip_tags($post->content), 120) }}
 
-                            <i class="bi bi-calendar-event me-1"></i>
+                            </p>
 
-                            {{ $post->created_at->format('d M Y') }}
+                            <div class="d-flex justify-content-between align-items-center mt-4">
 
-                        </small>
+                                <a
+                                    href="{{ route('posts.show',$post) }}"
+                                    class="btn btn-sm btn-primary">
 
-                    </div>
+                                    <i class="bi bi-eye"></i>
 
-                    {{-- Content --}}
-                    <p class="text-muted">
+                                    Read More
 
-                        {{ Str::limit(strip_tags($post->content), 120) }}
+                                </a>
 
-                    </p>
+                                <div>
 
-                    <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <a
+                                        href="{{ route('posts.edit',$post) }}"
+                                        class="btn btn-warning btn-sm">
 
-                        <a
-                            href="{{ route('posts.show',$post) }}"
-                            class="btn btn-sm btn-primary">
+                                        <i class="bi bi-pencil"></i>
 
-                            <i class="bi bi-eye"></i>
+                                    </a>
 
-                            Read More
+                                    <form
+                                        action="{{ route('posts.destroy',$post) }}"
+                                        method="POST"
+                                        class="d-inline">
 
-                        </a>
+                                        @csrf
 
-                        <div>
+                                        @method('DELETE')
 
-                            <a
-                                href="{{ route('posts.edit',$post) }}"
-                                class="btn btn-warning btn-sm">
+                                        <button
+                                            class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Delete this post?')">
 
-                                <i class="bi bi-pencil"></i>
+                                            <i class="bi bi-trash"></i>
 
-                            </a>
+                                        </button>
 
-                            <form
-                                action="{{ route('posts.destroy',$post) }}"
-                                method="POST"
-                                class="d-inline">
+                                    </form>
 
-                                @csrf
+                                </div>
 
-                                @method('DELETE')
-
-                                <button
-                                    class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Delete this post?')">
-
-                                    <i class="bi bi-trash"></i>
-
-                                </button>
-
-                            </form>
+                            </div>
 
                         </div>
 
@@ -425,11 +409,57 @@
 
                 </div>
 
+                @endforeach
+
             </div>
 
         </div>
 
-        @endforeach
+        <!-- Popular Posts Sidebar -->
+        <div class="col-lg-4">
+
+           <div class="card shadow-sm border-0 sticky-sidebar">
+
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-fire me-2"></i>
+                        Popular Posts
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    @forelse($popularPosts as $popular)
+
+                    <div class="mb-3 pb-3 border-bottom">
+
+                        <a href="{{ route('posts.show', $popular) }}"
+                            class="fw-bold text-decoration-none d-block">
+
+                            {{ Str::limit($popular->title, 45) }}
+
+                        </a>
+
+                        <small class="text-muted">
+                            <i class="bi bi-eye me-1"></i>
+                            {{ number_format($popular->views) }} Views
+                        </small>
+
+                    </div>
+
+                    @empty
+
+                    <p class="text-muted mb-0">
+                        No popular posts yet.
+                    </p>
+
+                    @endforelse
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 

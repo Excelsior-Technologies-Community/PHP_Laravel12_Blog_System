@@ -41,16 +41,16 @@
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-type-h1 text-primary"></i>
                                 </span>
-                                <input type="text" 
-                                       class="form-control @error('title') is-invalid @enderror" 
-                                       id="title" 
-                                       name="title" 
-                                       value="{{ old('title') }}" 
-                                       placeholder="Enter a catchy title for your post..."
-                                       required
-                                       autofocus>
+                                <input type="text"
+                                    class="form-control @error('title') is-invalid @enderror"
+                                    id="title"
+                                    name="title"
+                                    value="{{ old('title') }}"
+                                    placeholder="Enter a catchy title for your post..."
+                                    required
+                                    autofocus>
                                 @error('title')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
                             <small class="text-muted d-flex align-items-center mt-2">
@@ -66,15 +66,15 @@
                             </label>
                             <div class="position-relative">
                                 <div class="border rounded-3 p-3 @error('content') border-danger @enderror">
-                                    <textarea class="form-control border-0 @error('content') is-invalid @enderror" 
-                                              id="content" 
-                                              name="content" 
-                                              rows="8" 
-                                              placeholder="Write your amazing content here..."
-                                              required>{{ old('content') }}</textarea>
+                                    <textarea class="form-control border-0 @error('content') is-invalid @enderror"
+                                        id="content"
+                                        name="content"
+                                        rows="8"
+                                        placeholder="Write your amazing content here..."
+                                        required>{{ old('content') }}</textarea>
                                 </div>
                                 @error('content')
-                                    <div class="invalid-feedback d-block mt-2">{{ $message }}</div>
+                                <div class="invalid-feedback d-block mt-2">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="d-flex justify-content-between mt-2">
@@ -91,12 +91,12 @@
                             <label for="image" class="form-label fw-semibold">
                                 Featured Image <span class="text-muted">(Optional)</span>
                             </label>
-                            
+
                             <!-- Image Preview -->
                             <div class="image-upload-container mb-3">
                                 <div class="image-preview border-2 border-dashed rounded-4 p-4 text-center"
-                                     id="imagePreview"
-                                     style="border-style: dashed; border-color: #dee2e6;">
+                                    id="imagePreview"
+                                    style="border-style: dashed; border-color: #dee2e6;">
                                     <div class="preview-placeholder">
                                         <i class="bi bi-image display-4 text-muted mb-3"></i>
                                         <p class="text-muted mb-2">Click to upload or drag and drop</p>
@@ -105,22 +105,22 @@
                                     <img id="previewImage" class="img-fluid rounded-3 d-none" alt="Preview">
                                 </div>
                             </div>
-                            
+
                             <!-- File Input -->
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-upload text-primary"></i>
                                 </span>
-                                <input type="file" 
-                                       class="form-control @error('image') is-invalid @enderror" 
-                                       id="image" 
-                                       name="image" 
-                                       accept="image/*">
+                                <input type="file"
+                                    class="form-control @error('image') is-invalid @enderror"
+                                    id="image"
+                                    name="image"
+                                    accept="image/*">
                                 @error('image')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
-                            
+
                             <!-- Image Requirements -->
                             <div class="mt-3 p-3 bg-light rounded-3">
                                 <div class="row">
@@ -145,12 +145,71 @@
                             </div>
                         </div>
 
+                        <!-- Status & Featured -->
+                        <div class="row mb-5">
+
+                            <!-- Status -->
+                            <div class="col-md-6">
+                                <label for="status" class="form-label fw-semibold">
+                                    Post Status <span class="text-danger">*</span>
+                                </label>
+
+                                <select
+                                    class="form-select @error('status') is-invalid @enderror"
+                                    id="status"
+                                    name="status"
+                                    required>
+
+                                    <option value="">Select Status</option>
+
+                                    <option value="published"
+                                        {{ old('status') == 'published' ? 'selected' : '' }}>
+                                        Published
+                                    </option>
+
+                                    <option value="draft"
+                                        {{ old('status') == 'draft' ? 'selected' : '' }}>
+                                        Draft
+                                    </option>
+
+                                </select>
+
+                                @error('status')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+
+                            <!-- Featured -->
+                            <div class="col-md-6 d-flex align-items-end">
+
+                                <div class="form-check form-switch fs-5">
+
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        id="is_featured"
+                                        name="is_featured"
+                                        value="1"
+                                        {{ old('is_featured') ? 'checked' : '' }}>
+
+                                    <label class="form-check-label ms-2" for="is_featured">
+                                        ⭐ Mark as Featured Post
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
                         <!-- Form Actions -->
                         <div class="d-flex justify-content-between align-items-center pt-4 border-top">
                             <a href="{{ route('posts.index') }}" class="btn btn-outline-secondary px-4 rounded-3">
                                 <i class="bi bi-arrow-left me-2"></i>Back to Posts
                             </a>
-                            
+
                             <div class="d-flex gap-3">
                                 <button type="button" class="btn btn-light px-4 rounded-3" id="previewBtn">
                                     <i class="bi bi-eye me-2"></i>Preview
@@ -352,7 +411,9 @@
     }
 
     @keyframes spinner {
-        to { transform: rotate(360deg); }
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>
 
@@ -375,7 +436,7 @@
         function updateCharCount() {
             const count = contentTextarea.value.length;
             charCount.textContent = `${count.toLocaleString()} characters`;
-            
+
             if (count > 5000) {
                 charCount.classList.add('danger');
                 charCount.classList.remove('warning');
@@ -396,7 +457,7 @@
                     previewImage.classList.remove('d-none');
                     previewPlaceholder.classList.add('d-none');
                     imagePreview.classList.add('has-image');
-                    
+
                     // Update modal preview
                     const modalImage = document.querySelector('#modalImagePreview');
                     modalImage.innerHTML = `<img src="${e.target.result}" class="img-fluid" alt="Preview">`;
@@ -408,9 +469,9 @@
         // Auto-save simulation
         function updateLastSaved() {
             const now = new Date();
-            const timeString = now.toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+            const timeString = now.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
             });
             lastSaved.textContent = timeString;
         }
@@ -418,8 +479,8 @@
         // Preview Modal
         function updatePreviewModal() {
             document.getElementById('modalTitle').textContent = titleInput.value || 'Your Title Here';
-            document.getElementById('modalContent').textContent = 
-                contentTextarea.value.substring(0, 300) + 
+            document.getElementById('modalContent').textContent =
+                contentTextarea.value.substring(0, 300) +
                 (contentTextarea.value.length > 300 ? '...' : '');
         }
 
@@ -452,7 +513,7 @@
             e.preventDefault();
             this.style.borderColor = '#dee2e6';
             this.style.backgroundColor = '#f8f9fa';
-            
+
             if (e.dataTransfer.files.length) {
                 imageInput.files = e.dataTransfer.files;
                 handleImagePreview(e.dataTransfer.files[0]);
@@ -477,16 +538,16 @@
             // Show loading state
             submitBtn.classList.add('btn-loading');
             submitBtn.disabled = true;
-            
+
             // Optional: Validate minimum content length
-            if (contentTextarea.value.trim().length < 50) {
+            if (contentTextarea.value.trim().length < 10) {
                 e.preventDefault();
-                alert('Please write at least 50 characters for the content.');
+                alert('Please write at least 10 characters for the content.');
                 submitBtn.classList.remove('btn-loading');
                 submitBtn.disabled = false;
                 return;
             }
-            
+
             // Auto-save on submit
             updateLastSaved();
         });
