@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Laravel Blog System')</title>
-    
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    
+
     <!-- Custom CSS -->
     <style>
         :root {
@@ -40,6 +40,9 @@
         .navbar {
             background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1050;
         }
 
         .navbar-brand {
@@ -321,45 +324,52 @@
             color: white;
         }
 
+        /* Sidebar Sticky */
+        .sticky-sidebar {
+            position: sticky;
+            top: 100px;
+            z-index: 10;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .navbar-brand {
                 font-size: 1.4rem;
             }
-            
+
             .blog-title {
                 font-size: 1.2rem;
             }
-            
+
             .blog-content {
                 padding: 20px;
             }
-            
+
             .footer {
                 text-align: center;
             }
-            
+
             .social-links {
                 justify-content: center;
             }
         }
     </style>
-    
+
     @yield('styles')
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ route('posts.index') }}">
                 <i class="bi bi-pencil-square me-2"></i>BlogSphere
             </a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -380,19 +390,19 @@
     <!-- Main Content -->
     <main class="container my-5">
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
         @endif
 
         @yield('content')
@@ -414,7 +424,7 @@
                         <a href="#"><i class="bi bi-github"></i></a>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-2 col-md-6 mb-4">
                     <h5>Quick Links</h5>
                     <ul class="footer-links">
@@ -424,7 +434,7 @@
                         <li><a href="#">Categories</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h5>Resources</h5>
                     <ul class="footer-links">
@@ -434,7 +444,7 @@
                         <li><a href="#">Support</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h5>Contact</h5>
                     <ul class="footer-links">
@@ -444,7 +454,7 @@
                     </ul>
                 </div>
             </div>
-            
+
             <div class="copyright">
                 <p>&copy; {{ date('Y') }} BlogSphere. All rights reserved. | Built with Laravel & Bootstrap</p>
             </div>
@@ -453,13 +463,13 @@
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Custom JavaScript -->
     <script>
         // Confirm before deleting
         document.addEventListener('DOMContentLoaded', function() {
             const deleteForms = document.querySelectorAll('form[onsubmit*="confirm"]');
-            
+
             deleteForms.forEach(form => {
                 form.addEventListener('submit', function(e) {
                     if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
@@ -467,7 +477,7 @@
                     }
                 });
             });
-            
+
             // Auto-dismiss alerts after 5 seconds
             setTimeout(() => {
                 const alerts = document.querySelectorAll('.alert');
@@ -478,7 +488,7 @@
             }, 5000);
         });
     </script>
-    
+
     @yield('scripts')
 </body>
 

@@ -33,7 +33,18 @@ class PostController extends Controller
             $query->where('is_featured', true);
         }
 
-        $posts = $query->latest()->paginate(4)->withQueryString();
+        if ($request->sort == 'popular') {
+            $query->orderByDesc('views');
+        } else {
+            $query->latest();
+        }
+
+        $posts = $query->paginate(4)->withQueryString();
+
+        $popularPosts = Post::published()
+            ->orderByDesc('views')
+            ->take(5)
+            ->get();
 
         $statistics = [
             'total' => Post::count(),
@@ -43,7 +54,11 @@ class PostController extends Controller
             'trash' => Post::onlyTrashed()->count(),
         ];
 
-        return view('posts.index', compact('posts', 'statistics'));
+        return view('posts.index', compact(
+            'posts',
+            'statistics',
+            'popularPosts'
+        ));
     }
 
     public function create()
@@ -84,7 +99,23 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view('posts.show', compact('post'));
+        // Increase view count
+        $post->increment('views');
+
+        // Refresh updated views
+        $post->refresh();
+
+        // Top 5 popular posts (excluding current post)
+        $popularPosts = Post::published()
+            ->where('id', '!=', $post->id)
+            ->orderByDesc('views')
+            ->take(5)
+            ->get();
+
+        return view('posts.show', compact(
+            'post',
+            'popularPosts'
+        ));
     }
 
     /**
