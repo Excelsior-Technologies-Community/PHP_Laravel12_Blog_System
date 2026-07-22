@@ -21,6 +21,8 @@ class Post extends Model
 
         'reading_time',
 
+        'views',
+
     ];
 
     protected $casts = [
@@ -61,5 +63,13 @@ class Post extends Model
     public function scopeDraft($query)
     {
         return $query->where('status', 'draft');
+    }
+
+    /**
+     * Popular Posts Scope
+     */
+    public function scopePopular($query)
+    {
+        return $query->orderByDesc('views');
     }
 }
