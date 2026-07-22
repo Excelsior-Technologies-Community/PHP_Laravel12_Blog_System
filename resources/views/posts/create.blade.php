@@ -548,6 +548,7 @@
                 return;
             }
 
+            
             // Auto-save on submit
             updateLastSaved();
         });
