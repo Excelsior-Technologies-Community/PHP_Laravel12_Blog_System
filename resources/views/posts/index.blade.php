@@ -1,192 +1,550 @@
 @extends('layouts.app')
 
-@section('title', 'Blog Posts - BlogSphere')
+@section('title', 'Blog Dashboard')
 
 @section('content')
+
 <div class="container my-5">
 
-    <!-- Header with Stats -->
-    <div class="d-flex justify-content-between align-items-center mb-5">
+    <!-- Dashboard Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
         <div>
-            <h1 class="fw-bold display-6 mb-2">Latest Blog Posts</h1>
-            <p class="text-muted">
-                <i class="bi bi-newspaper me-1"></i>
-                {{ $posts->total() }} posts published • {{ $posts->count() }} showing
+
+            <h2 class="fw-bold">
+                <i class="bi bi-journal-richtext me-2"></i>
+                Blog Dashboard
+            </h2>
+
+            <p class="text-muted mb-0">
+                Manage all blog posts from one place.
             </p>
+
         </div>
-        <a href="{{ route('posts.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Create New Post
-        </a>
+
+        <div>
+
+            <a href="{{ route('posts.trash') }}"
+                class="btn btn-outline-danger me-2">
+
+                <i class="bi bi-trash"></i>
+
+                Trash
+
+                <span class="badge bg-danger">
+
+                    {{ $statistics['trash'] }}
+
+                </span>
+
+            </a>
+
+            <a href="{{ route('posts.create') }}"
+                class="btn btn-primary">
+
+                <i class="bi bi-plus-circle"></i>
+
+                Create Post
+
+            </a>
+
+        </div>
+
     </div>
 
-    <!-- Search and Filter -->
-    <div class="row mb-5">
-        <div class="col-lg-8 mx-auto">
-            <form action="{{ route('posts.index') }}" method="GET" class="search-form">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control" 
-                           placeholder="Search posts by title or content..." 
-                           value="{{ request('search') }}">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="bi bi-search me-1"></i>Search
-                    </button>
-                    @if(request('search'))
-                        <a href="{{ route('posts.index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle"></i>
-                        </a>
-                    @endif
+    <!-- Dashboard Statistics -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body text-center">
+
+                    <h3 class="fw-bold text-primary">
+
+                        {{ $statistics['total'] }}
+
+                    </h3>
+
+                    <p class="mb-0">
+
+                        Total Posts
+
+                    </p>
+
                 </div>
-            </form>
+
+            </div>
+
         </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body text-center">
+
+                    <h3 class="fw-bold text-success">
+
+                        {{ $statistics['published'] }}
+
+                    </h3>
+
+                    <p class="mb-0">
+
+                        Published
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body text-center">
+
+                    <h3 class="fw-bold text-warning">
+
+                        {{ $statistics['draft'] }}
+
+                    </h3>
+
+                    <p class="mb-0">
+
+                        Draft
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body text-center">
+
+                    <h3 class="fw-bold text-danger">
+
+                        {{ $statistics['featured'] }}
+
+                    </h3>
+
+                    <p class="mb-0">
+
+                        Featured
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Search + Filters -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="GET"
+                action="{{ route('posts.index') }}">
+
+                <div class="row">
+
+                    <div class="col-md-5">
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search title or content..."
+                            value="{{ request('search') }}">
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <select
+                            name="status"
+                            class="form-select">
+
+                            <option value="">
+
+                                All Status
+
+                            </option>
+
+                            <option
+                                value="published"
+                                {{ request('status')=='published' ? 'selected' : '' }}>
+
+                                Published
+
+                            </option>
+
+                            <option
+                                value="draft"
+                                {{ request('status')=='draft' ? 'selected' : '' }}>
+
+                                Draft
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <select
+                            name="featured"
+                            class="form-select">
+
+                            <option value="">
+
+                                Featured?
+
+                            </option>
+
+                            <option
+                                value="1"
+                                {{ request('featured')=='1' ? 'selected' : '' }}>
+
+                                Yes
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-3 d-grid">
+
+                        <button
+                            class="btn btn-primary">
+
+                            <i class="bi bi-search"></i>
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    {{-- Keep your existing --}}
+    {{-- @if($posts->isEmpty()) --}}
+
+    <div class="row g-4">
+
+        @foreach($posts as $post)
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                {{-- Image --}}
+                @if($post->image)
+
+                <div class="position-relative">
+
+                    <img
+                        src="{{ asset('storage/'.$post->image) }}"
+                        class="card-img-top"
+                        style="height:220px;object-fit:cover;"
+                        alt="{{ $post->title }}">
+
+                    {{-- Featured Badge --}}
+                    @if($post->is_featured)
+
+                    <span
+                        class="badge bg-danger position-absolute top-0 start-0 m-3">
+
+                        ⭐ Featured
+
+                    </span>
+
+                    @endif
+
+                </div>
+
+                @else
+
+                <div
+                    class="bg-light d-flex justify-content-center align-items-center"
+                    style="height:220px;">
+
+                    <i
+                        class="bi bi-image display-3 text-secondary"></i>
+
+                    @if($post->is_featured)
+
+                    <span
+                        class="badge bg-danger position-absolute m-3">
+
+                        ⭐ Featured
+
+                    </span>
+
+                    @endif
+
+                </div>
+
+                @endif
+
+                <div class="card-body">
+
+                    {{-- Title --}}
+
+                    <h5 class="fw-bold">
+
+                        {{ Str::limit($post->title,60) }}
+
+                    </h5>
+
+                    {{-- Status Badge --}}
+
+                    @if($post->status=='published')
+
+                    <span class="badge bg-success">
+
+                        Published
+
+                    </span>
+
+                    @else
+
+                    <span class="badge bg-warning text-dark">
+
+                        Draft
+
+                    </span>
+
+                    @endif
+
+                    <hr>
+
+                    {{-- Reading Time --}}
+                    <div class="mb-2">
+
+                        <small class="text-muted">
+
+                            <i class="bi bi-book me-1"></i>
+
+                            {{ $post->reading_time }} min read
+
+                        </small>
+
+                    </div>
+
+                    {{-- Created Date --}}
+                    <div class="mb-3">
+
+                        <small class="text-muted">
+
+                            <i class="bi bi-calendar-event me-1"></i>
+
+                            {{ $post->created_at->format('d M Y') }}
+
+                        </small>
+
+                    </div>
+
+                    {{-- Content --}}
+                    <p class="text-muted">
+
+                        {{ Str::limit(strip_tags($post->content), 120) }}
+
+                    </p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+
+                        <a
+                            href="{{ route('posts.show',$post) }}"
+                            class="btn btn-sm btn-primary">
+
+                            <i class="bi bi-eye"></i>
+
+                            Read More
+
+                        </a>
+
+                        <div>
+
+                            <a
+                                href="{{ route('posts.edit',$post) }}"
+                                class="btn btn-warning btn-sm">
+
+                                <i class="bi bi-pencil"></i>
+
+                            </a>
+
+                            <form
+                                action="{{ route('posts.destroy',$post) }}"
+                                method="POST"
+                                class="d-inline">
+
+                                @csrf
+
+                                @method('DELETE')
+
+                                <button
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Delete this post?')">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        @endforeach
+
     </div>
 
     @if($posts->isEmpty())
-        <!-- Empty State -->
-        <div class="text-center py-5 my-5">
-            <div class="mb-4">
-                <i class="bi bi-file-text display-1 text-muted"></i>
-            </div>
-            <h3 class="mb-3">No posts found</h3>
-            <p class="text-muted mb-4">
-                {{ request('search') ? 'No posts match your search criteria.' : 'Start by creating your first blog post!' }}
-            </p>
-            @if(!request('search'))
-                <a href="{{ route('posts.create') }}" class="btn btn-primary btn-lg">
-                    <i class="bi bi-plus-circle me-2"></i>Create Your First Post
-                </a>
-            @endif
-        </div>
+
+    <div class="text-center py-5">
+
+        <i class="bi bi-file-earmark-text display-1 text-secondary"></i>
+
+        <h3 class="mt-3">
+
+            No Posts Found
+
+        </h3>
+
+        <p class="text-muted">
+
+            There are no posts available.
+
+        </p>
+
+        <a
+            href="{{ route('posts.create') }}"
+            class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Create First Post
+
+        </a>
+
+    </div>
+
     @else
-        <!-- Blog Cards Grid -->
-        <div class="row g-4">
-            @foreach($posts as $post)
-                <div class="col-md-6 col-lg-4">
-                    <div class="blog-card">
-                        @if($post->image)
-                            <div class="blog-image">
-                                <img src="{{ asset('storage/'.$post->image) }}" 
-                                     alt="{{ $post->title }}"
-                                     class="img-fluid">
-                                <div class="category-badge" style="position: absolute; top: 15px; left: 15px;">
-                                    Featured
-                                </div>
-                            </div>
-                        @else
-                            <div class="blog-image bg-light d-flex align-items-center justify-content-center">
-                                <i class="bi bi-card-image display-4 text-muted"></i>
-                            </div>
-                        @endif
 
-                        <div class="blog-content">
-                            <div class="category-badge">Uncategorized</div>
-                            
-                            <h5 class="blog-title">
-                                <a href="{{ route('posts.show', $post) }}" class="text-decoration-none text-dark">
-                                    {{ Str::limit($post->title, 60) }}
-                                </a>
-                            </h5>
+    {{-- Pagination --}}
 
-                            <div class="blog-meta">
-                                <span>
-                                    <i class="bi bi-calendar3"></i>
-                                    {{ $post->created_at->format('M d, Y') }}
-                                </span>
-                                <span>
-                                    <i class="bi bi-clock"></i>
-                                    {{ $post->created_at->format('h:i A') }}
-                                </span>
-                            </div>
+    <div class="mt-5">
 
-                            <p class="blog-text">
-                                {{ Str::limit(strip_tags($post->content), 150) }}
-                            </p>
+        <div class="d-flex justify-content-center">
 
-                            <a href="{{ route('posts.show', $post) }}" class="read-more">
-                                Read More <i class="bi bi-arrow-right"></i>
-                            </a>
+            {{ $posts->links('pagination::bootstrap-5') }}
 
-                            <!-- Admin Actions -->
-                            <div class="blog-actions">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="bi bi-person-circle me-1"></i>
-                                        {{ $post->author ?? 'Admin' }}
-                                    </small>
-                                    
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ route('posts.edit', $post) }}" 
-                                           class="btn btn-sm btn-edit">
-                                            <i class="bi bi-pencil me-1"></i>Edit
-                                        </a>
-                                        
-                                        <form action="{{ route('posts.destroy', $post) }}" 
-                                              method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" 
-                                                    class="btn btn-sm btn-delete"
-                                                    onclick="return confirm('Delete this post?')">
-                                                <i class="bi bi-trash me-1"></i>Delete
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
         </div>
 
-        <!-- Pagination -->
-        <div class="pagination-container mt-5">
-            <div class="d-flex flex-column align-items-center">
-                <!-- Pagination Links -->
-                <div class="mb-3">
-                    {{ $posts->onEachSide(1)->links('pagination::bootstrap-5') }}
-                </div>
-                
-                <!-- Results Info -->
-                <div class="text-center text-muted">
-                    <p class="mb-0">
-                        Showing 
-                        <strong>{{ $posts->firstItem() }}–{{ $posts->lastItem() }}</strong> 
-                        of <strong>{{ $posts->total() }}</strong> posts
-                    </p>
-                    @if(request('search'))
-                        <small class="text-primary">
-                            <i class="bi bi-search me-1"></i>
-                            Searching for: "{{ request('search') }}"
-                        </small>
-                    @endif
-                </div>
-            </div>
+        <div class="text-center mt-3 text-muted">
+
+            Showing
+
+            {{ $posts->firstItem() }}
+
+            -
+
+            {{ $posts->lastItem() }}
+
+            of
+
+            {{ $posts->total() }}
+
+            Posts
+
         </div>
+
+    </div>
+
     @endif
-</div>
 
-<!-- Back to Top Button -->
-<button id="backToTop" class="btn btn-primary rounded-circle position-fixed" 
-        style="bottom: 30px; right: 30px; width: 50px; height: 50px; display: none;">
-    <i class="bi bi-arrow-up"></i>
-</button>
+    {{-- Back To Top Button --}}
 
-<script>
-    // Back to Top Button
-    document.addEventListener('DOMContentLoaded', function() {
-        const backToTop = document.getElementById('backToTop');
-        
-        window.addEventListener('scroll', function() {
-            if (window.pageYOffset > 300) {
-                backToTop.style.display = 'block';
-            } else {
-                backToTop.style.display = 'none';
-            }
+    <button
+        id="backToTop"
+        class="btn btn-primary rounded-circle"
+        style="position:fixed;
+           bottom:25px;
+           right:25px;
+           display:none;
+           width:50px;
+           height:50px;">
+
+        <i class="bi bi-arrow-up"></i>
+
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            let button = document.getElementById('backToTop');
+
+            window.addEventListener('scroll', function() {
+
+                if (window.scrollY > 300) {
+
+                    button.style.display = 'block';
+
+                } else {
+
+                    button.style.display = 'none';
+
+                }
+
+            });
+
+            button.addEventListener('click', function() {
+
+                window.scrollTo({
+
+                    top: 0,
+
+                    behavior: 'smooth'
+
+                });
+
+            });
+
         });
-        
-        backToTop.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    });
-</script>
-@endsection
+    </script>
+
+    @endsection
