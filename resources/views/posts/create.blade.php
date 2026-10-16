@@ -59,6 +59,41 @@
                             </small>
                         </div>
 
+                        <!-- Category & Tags Selection -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="category_id" class="form-label fw-semibold">
+                                    Category <span class="text-danger">*</span>
+                                </label>
+                                <select name="category_id" id="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
+                                    <option value="">Select Category...</option>
+                                    @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('category_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Tags <span class="text-muted small">(Multi-select)</span>
+                                </label>
+                                <div class="d-flex flex-wrap gap-2 p-2 border rounded-3 bg-body-tertiary" style="max-height: 120px; overflow-y: auto;">
+                                    @foreach($tags as $tag)
+                                    <div class="form-check form-check-inline m-0 me-2 mb-1">
+                                        <input class="form-check-input" type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag-{{ $tag->id }}"
+                                            {{ is_array(old('tags')) && in_array($tag->id, old('tags')) ? 'checked' : '' }}>
+                                        <label class="form-check-label small cursor-pointer" for="tag-{{ $tag->id }}">#{{ $tag->name }}</label>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Content Field -->
                         <div class="mb-4">
                             <label for="content" class="form-label fw-semibold">
